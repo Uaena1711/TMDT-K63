@@ -35,7 +35,7 @@ apt-get install git curl software-properties-common
     max_input_time = 900
     ```
 5. Create a database 
-    - Login to mysql mysql -u root -p
+    - Login to mysql `mysql -u root -p`
     - Create db name magentodb
     - ```sql
         create database magentodb;
@@ -46,28 +46,32 @@ apt-get install git curl software-properties-common
     - Clone this source 
     - Install composer: `curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer`
     - Install dependencies: `composer install`
-    - Setup base env var for project: `bin/magento setup:install --base-url=http://127.0.0.1 --db-host=127.0.0.1 --db-name=magentodb --db-user=root --db-password=<Your password> --admin-firstname=<your Magento account> --admin-lastname=<your Magento account> --admin-email=<your Magento account> --admin-user=<your Magento account> --admin-password=<your Magento account> --language=en_US --currency=USD`
+    - Setup base env var for project: 
+    ```bash 
+       bin/magento setup:install --base-url=http://127.0.0.1 --db-host=127.0.0.1 --db-name=magentodb --db-user=root --db-password=<Your password> --admin-firstname=<your Magento account> --admin-lastname=<your Magento account> --admin-email=<your Magento account> --admin-user=<your Magento account> --admin-password=<your Magento account> --language=en_US --currency=USD
+    ```
     - Change ownership: `sudo chown -R www-data:www-data .`
 
 7. Config nginx file
     - `sudo vim /etc/nginx/sites-available/magento2`
-    -  Enter this:   ```json
-                        upstream fastcgi_backend {
-                            server unix:/run/php/php7.3-fpm.sock;
-                        }
+    -  ```
+        upstream fastcgi_backend {
+            server unix:/run/php/php7.3-fpm.sock;
+        }
 
-                        server {
-                            server_name yourdomain.com;
-                            listen 80;
-                            set $MAGE_ROOT /var/www/magento2;
-                            set $MAGE_MODE developer; # or production
+        server {
+            server_name yourdomain.com;
+            listen 80;
+            set $MAGE_ROOT /var/www/magento2;
+            set $MAGE_MODE developer; # or production
 
-                            access_log /var/log/nginx/magento2-access.log;
-                            error_log /var/log/nginx/magento2-error.log;
+            access_log /var/log/nginx/magento2-access.log;
+            error_log /var/log/nginx/magento2-error.log;
 
-                            include /var/www/magento2/nginx.conf.sample;
-                        }
-                    ```
+            include /var/www/magento2/nginx.conf.sample;
+        }
+
+        ```
     - Remove the default nginx configuration file, if is not being used: `sudo rm -f /etc/nginx/sites-enabled/default`
     - Link config to site-enable: `sudo ln -s /etc/nginx/sites-available/magento2 /etc/nginx/sites-enabled/magento2`
     - Restart nginx: `sudo service nginx restart`
