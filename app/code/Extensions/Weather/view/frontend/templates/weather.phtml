@@ -1,0 +1,83 @@
+<?php
+$cityID = '2-353412_1_AL'; // HN city id
+
+$apiKey = 'u8gqTF6GH1TtRVuXZoh3MrnH3dWxKiN3'; // api key of admin account to author request
+
+// fetch weather url
+$url =
+    'http://dataservice.accuweather.com/forecasts/v1/daily/1day/' .
+    $cityID .
+    '?apikey=' .
+    $apiKey .
+    '&language=en&metric=true';
+
+$ch = curl_init();
+
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+curl_setopt($ch, CURLOPT_URL, $url);
+
+$result = curl_exec($ch);
+
+curl_close($ch);
+
+$data = json_decode($result);
+
+?>
+<div>
+<?php
+
+$tomorrow = $data->Headline;
+$convertdate = (new \DateTime())->setTimestamp(strtotime($tomorrow->EffectiveDate));
+$formattedDate = $convertdate->format(\Magento\Framework\Stdlib\DateTime::DATETIME_PHP_FORMAT);
+$today = $data->DailyForecasts;
+$temperature = $today[0]->Temperature;
+$day = $today[0]->Day;
+$night = $today[0]->Night;
+?>
+
+    <table class="style-example"> 
+        <caption>Weather forecast at Hà Nội</caption>
+        <thead></thead>
+        <tbody>
+            <tr>
+                <th scope="row" rowspan="2">
+                Temperature (C)
+                </th>
+                <td>
+                    <?php echo 'Minimum: ' . $temperature->Minimum->Value; ?>
+                </td>
+                
+            </tr>
+            <tr>
+                <td>
+                    <?php echo 'Maximum: ' . $temperature->Maximum->Value; ?>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">
+                Day
+                </th>
+                <td>
+                    <?php echo $day->IconPhrase; ?>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">
+                Night
+                </th>
+                <td>
+                    <?php echo $night->IconPhrase; ?>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">
+                Weather forecast of EffectiveDate <?php echo $formattedDate; ?>
+                </th>
+                <td>
+                    <?php echo $tomorrow->Text; ?>
+                <td>
+            </tr>
+        </tbody>
+    </table>
+</div>
