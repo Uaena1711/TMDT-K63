@@ -1,0 +1,40 @@
+version: "3"
+services:
+  nginx:
+    container_name: nginx
+    depends_on:
+      - php
+    image: nginx:alpine
+    volumes:
+      - ./magento2/:/magento
+      - ./nginx/:/etc/nginx/conf.d/
+      - ./tmp/:/tmp/
+    ports:
+      - 80:80
+  php:
+    container_name: php
+    build: ./php
+    volumes:
+      - ./magento2/:/magento
+      - ./php/start.sh:/usr/local/etc/start.sh
+      - ./php/ecom.conf.ini:/usr/local/etc/php/conf.d/ecom.conf.ini
+      - ./php/www.conf:/usr/local/etc/php-fpm.d/www.conf
+    expose:
+      - 9000
+  elastic:
+    image: elasticsearch:2.3.5
+    container_name: es
+    environment:
+      - discovery.type=single-node
+    ports:
+      - 9200:9200
+  db:
+    image: mysql:5.6.23
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
+      MYSQL_DATABASE: "magentodb"
+      MYSQL_USER: "magento"
+      MYSQL_PASSWORD: "123456"
+      LANG: C.UTF-8
+    ports:
+      - 3306:3306
