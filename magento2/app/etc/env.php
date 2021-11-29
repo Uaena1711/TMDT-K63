@@ -73,6 +73,6 @@ return [
         'magento2.local'
     ],
     'install' => [
-        'date' => 'Mon, 15 Nov 2021 13:27:58 +0000'
+        'date' => 'Mon, 29 Nov 2021 01:01:16 +0000'
     ]
 ];

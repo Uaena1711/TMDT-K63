@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+/**
+ * extensions_index_weather    
+ */
+-->
+<page
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  layout="1column"
+  xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd"
+>
+    <head>
+      <css src="Extensions_Weather::css/_module.css" />
+    </head>
+    <body>
+        <referenceContainer name="content">
+            <block
+        class="Extensions\Weather\Block\Index"
+        name="extenstions_index_weather"
+        template="Extensions_Weather::weather.phtml"
+      />
+        </referenceContainer>
+    </body>
+</page>

@@ -173,6 +173,8 @@ return [
         'Magento_CatalogWidget' => 1,
         'Magento_Wishlist' => 1,
         'Magento_WishlistAnalytics' => 1,
-        'Magento_WishlistGraphQl' => 1
+        'Magento_WishlistGraphQl' => 1,
+        'Extensions_News' => 1,
+        'Extensions_Weather' => 1
     ]
 ];
