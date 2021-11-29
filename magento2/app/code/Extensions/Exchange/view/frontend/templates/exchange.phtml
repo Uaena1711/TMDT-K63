@@ -1,0 +1,68 @@
+<head>
+<style>
+#customers {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#customers td, #customers th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+
+#customers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  color: black;
+}
+</style>
+</head>
+
+<div class="content">
+
+<?php
+$url = 'https://portal.vietcombank.com.vn/Usercontrols/TVPortal.TyGia/pXML.aspx?b=68';
+
+
+$feeds = simplexml_load_file($url);
+
+echo '<h1> Fetched at: ' . $feeds->DateTime . '</h1>'
+
+?>
+
+<table id="customers">
+  <tr>
+    <th> CurrencyCode </th>
+    <th> CurrencyName </th>
+    <th> Buy </th>
+    <th> Transfer </th>
+    <th> Sell </th>
+
+  </tr>
+
+
+  <?php
+
+    foreach($feeds->Exrate as $item) {
+      echo '<tr>';
+
+      echo '<th>' . $item->attributes()->CurrencyCode . '</th>';
+      echo '<th>' . $item->attributes()->CurrencyName . '</th>';
+      echo '<th>' . $item->attributes()->Buy . '</th>';
+      echo '<th>' . $item->attributes()->Transfer . '</th>';
+      echo '<th>' . $item->attributes()->Sell . '</th>';
+
+      echo '</tr>';
+    }
+  ?>
+  
+  </table>
+
+<?php
+  echo '<p>Source: ' . $feeds->Source . '</p>';
+?>
+
+</div>
