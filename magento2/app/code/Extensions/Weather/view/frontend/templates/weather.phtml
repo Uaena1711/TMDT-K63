@@ -9,7 +9,7 @@ $url =
     $cityID .
     '?apikey=' .
     $apiKey .
-    '&language=en&metric=true';
+    '&language=en&metric=true&details=true';
 
 $ch = curl_init();
 
@@ -22,62 +22,607 @@ $result = curl_exec($ch);
 curl_close($ch);
 
 $data = json_decode($result);
-
 ?>
-<div>
-<?php
 
+<head>
+  <meta charset="UTF-8">
+  <style>
+  /*! CSS Used from: https://www.accuweather.com/bundles/city.three-day-desktop.d3f6f966756ad721041e.css */
+  @media (pointer: fine) {
+    .weather-card img.icon-arrow {
+      opacity: 0;
+      -webkit-transition: visibility 0.35s, opacity 0.15s ease;
+      transition: visibility 0.35s, opacity 0.15s ease;
+      visibility: hidden;
+    }
+
+    .weather-card:hover img.icon-arrow {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  .content-module {
+    margin-bottom: 16px;
+  }
+
+  .card {
+    -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.07);
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.07);
+  }
+
+  .weather-card {
+    background: #fff;
+    border-radius: 2px;
+    display: block;
+    padding: 12px 12px 0;
+    position: relative;
+  }
+
+  .weather-card a {
+    color: #000;
+  }
+
+  .weather-card .card-header {
+    display: flex;
+    font-size: 16px;
+    font-weight: 500;
+    justify-content: space-between;
+    line-height: 1.5;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+
+  .weather-card .card-header .sub-title {
+    color: #666c72;
+  }
+
+  .weather-card .card-content {
+    padding-bottom: 16px;
+  }
+
+  @media (min-width: 1024px) {
+    .weather-card .card-content {
+      display: flex;
+    }
+  }
+
+  .weather-card .forecast-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+    position: relative;
+  }
+
+  @media (min-width: 1024px) {
+    .weather-card .forecast-container {
+      flex-grow: 1;
+    }
+  }
+
+  .weather-card .forecast-container .icon-weather {
+    margin-right: 20px;
+  }
+
+  .weather-card .forecast-container .temp-container {
+    text-align: center;
+  }
+
+  .weather-card .forecast-container .temp {
+    font-size: 60px;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+    line-height: 1.07;
+  }
+
+  .weather-card .forecast-container .after-temp {
+    color: #878787;
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: normal;
+    line-height: 1.22;
+    margin-left: -16px;
+  }
+
+  .weather-card .forecast-container .real-feel {
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: normal;
+    line-height: 1.43;
+  }
+
+  .weather-card .phrase {
+    font-size: 18px;
+    line-height: 1.22;
+    text-align: center;
+  }
+
+  @media (min-width: 1024px) {
+    .weather-card .phrase {
+      align-self: center;
+      flex-basis: 150px;
+      flex-grow: 1;
+      text-align: left;
+    }
+  }
+
+  .weather-card .icon-arrow {
+    float: right;
+    margin-top: -80px;
+  }
+
+  @media (min-width: 1024px) {
+    .weather-card .icon-arrow {
+      align-self: center;
+      float: none;
+      margin-top: 0;
+    }
+  }
+
+  /*! CSS Used from: https://www.accuweather.com/bundles/4587.f3dc36abeb869ef8c518.css */
+  a,
+  div,
+  h2,
+  img,
+  span {
+    border: 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    font: inherit;
+    margin: 0;
+    padding: 0;
+    vertical-align: baseline;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  .content-module {
+    margin-bottom: 16px;
+  }
+
+  .card-module {
+    background-color: #fff;
+    -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+    padding: 12px 12px 16px;
+  }
+
+  .spaced-content {
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .weather-icon {
+    height: 128px;
+    width: 128px;
+  }
+
+  .cur-con-weather-card {
+    color: #000;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cur-con-weather-card__title {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+
+  .cur-con-weather-card__subtitle {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.43;
+    margin-bottom: 16px;
+    opacity: 0.6;
+  }
+
+  .cur-con-weather-card__body {
+    display: flex;
+    flex-grow: 1;
+    margin-bottom: 16px;
+  }
+
+  .cur-con-weather-card__panel {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  @media (min-width: 1024px) {
+    .cur-con-weather-card__panel {
+      width: 50%;
+    }
+  }
+
+  .cur-con-weather-card .details-container {
+    align-self: center;
+    display: none;
+  }
+
+  @media (min-width: 1024px) {
+    .cur-con-weather-card .details-container {
+      display: block;
+    }
+  }
+
+  .cur-con-weather-card .detail {
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-wrap: wrap;
+    padding: 8px 0;
+  }
+
+  .cur-con-weather-card .detail:last-child {
+    border-bottom: none;
+  }
+
+  .cur-con-weather-card .detail .label {
+    font-size: 16px;
+    line-height: 1.25;
+    margin-right: 8px;
+  }
+
+  .cur-con-weather-card .detail .value {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.33;
+  }
+
+  .cur-con-weather-card .forecast-container {
+    align-items: center;
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+    margin-right: 24px;
+  }
+
+  .cur-con-weather-card .forecast-container .weather-icon {
+    height: 88px;
+    margin-right: 12px;
+    width: 88px;
+  }
+
+  .cur-con-weather-card .forecast-container .temp {
+    font-size: 84px;
+    font-weight: 500;
+    letter-spacing: -0.7px;
+    line-height: 1.07;
+  }
+
+  .cur-con-weather-card .forecast-container .after-temp {
+    font-size: 24px;
+    line-height: 1.28;
+    margin-left: -24px;
+    opacity: 0.6;
+  }
+
+  .cur-con-weather-card .forecast-container .real-feel {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.43;
+  }
+
+  .cur-con-weather-card .phrase {
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  .cur-con-weather-card__cta {
+    align-items: center;
+    display: flex;
+  }
+
+  .cur-con-weather-card__cta .text {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-right: 6px;
+    text-transform: uppercase;
+  }
+
+  /*! CSS Used from: https://www.accuweather.com/bundles/4587.f3dc36abeb869ef8c518.css */
+  a,
+  div,
+  h2,
+  img,
+  p,
+  span {
+    border: 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    font: inherit;
+    margin: 0;
+    padding: 0;
+    vertical-align: baseline;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  .content-module {
+    margin-bottom: 16px;
+  }
+
+  .card-module {
+    background-color: #fff;
+    -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+    padding: 12px 12px 16px;
+  }
+
+  .spaced-content {
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .weather-icon {
+    height: 128px;
+    width: 128px;
+  }
+
+  .cur-con-weather-card {
+    color: #000;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cur-con-weather-card__title {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+
+  .cur-con-weather-card__subtitle {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.43;
+    margin-bottom: 16px;
+    opacity: 0.6;
+  }
+
+  .cur-con-weather-card__body {
+    display: flex;
+    flex-grow: 1;
+    margin-bottom: 16px;
+  }
+
+  .cur-con-weather-card__panel {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  @media (min-width: 1024px) {
+    .cur-con-weather-card__panel {
+      width: 50%;
+    }
+  }
+
+  .cur-con-weather-card .details-container {
+    align-self: center;
+    display: none;
+  }
+
+  @media (min-width: 1024px) {
+    .cur-con-weather-card .details-container {
+      display: block;
+    }
+  }
+
+  .cur-con-weather-card .detail {
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-wrap: wrap;
+    padding: 8px 0;
+  }
+
+  .cur-con-weather-card .detail:last-child {
+    border-bottom: none;
+  }
+
+  .cur-con-weather-card .detail .label {
+    font-size: 16px;
+    line-height: 1.25;
+    margin-right: 8px;
+  }
+
+  .cur-con-weather-card .detail .value {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.33;
+  }
+
+  .cur-con-weather-card .forecast-container {
+    align-items: center;
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+    margin-right: 24px;
+  }
+
+  .cur-con-weather-card .forecast-container .weather-icon {
+    height: 88px;
+    margin-right: 12px;
+    width: 88px;
+  }
+
+  .cur-con-weather-card .forecast-container .temp {
+    font-size: 84px;
+    font-weight: 500;
+    letter-spacing: -0.7px;
+    line-height: 1.07;
+  }
+
+  .cur-con-weather-card .forecast-container .after-temp {
+    font-size: 24px;
+    line-height: 1.28;
+    margin-left: -24px;
+    opacity: 0.6;
+  }
+
+  .cur-con-weather-card .forecast-container .real-feel {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.43;
+  }
+
+  .cur-con-weather-card .phrase {
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  .cur-con-weather-card__cta {
+    align-items: center;
+    display: flex;
+  }
+
+  .cur-con-weather-card__cta .text {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-right: 6px;
+    text-transform: uppercase;
+  }
+
+  /*! CSS Used from: https://www.accuweather.com/bundles/4587.f3dc36abeb869ef8c518.css */
+  a,
+  div,
+  h2,
+  img,
+  p,
+  span {
+    border: 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    font: inherit;
+    margin: 0;
+    padding: 0;
+    vertical-align: baseline;
+  }
+
+  a {
+    text-decoration: none;
+  }
+  </style>
+</head>
+
+<div>
+  <?php
 $tomorrow = $data->Headline;
-$convertdate = (new \DateTime())->setTimestamp(strtotime($tomorrow->EffectiveDate));
-$formattedDate = $convertdate->format(\Magento\Framework\Stdlib\DateTime::DATETIME_PHP_FORMAT);
+$convertdate = (new \DateTime())->setTimestamp(
+    strtotime($tomorrow->EffectiveDate)
+);
+$formattedDate = $convertdate->format(
+    \Magento\Framework\Stdlib\DateTime::DATETIME_PHP_FORMAT
+);
 $today = $data->DailyForecasts;
 $temperature = $today[0]->Temperature;
+$realFeelTemperature = $today[0]->RealFeelTemperature;
+$realFeelTemperatureShade = $today[0]->RealFeelTemperatureShade;
 $day = $today[0]->Day;
 $night = $today[0]->Night;
+
+$dayIconUrl =
+    'https://www.accuweather.com/images/weathericons/' . $day->Icon . '.svg';
 ?>
 
-    <table class="style-example"> 
-        <caption>Weather forecast at Hà Nội</caption>
-        <thead></thead>
-        <tbody>
-            <tr>
-                <th scope="row" rowspan="2">
-                Temperature (C)
-                </th>
-                <td>
-                    <?php echo 'Minimum: ' . $temperature->Minimum->Value; ?>
-                </td>
-                
-            </tr>
-            <tr>
-                <td>
-                    <?php echo 'Maximum: ' . $temperature->Maximum->Value; ?>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">
-                Day
-                </th>
-                <td>
-                    <?php echo $day->IconPhrase; ?>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">
-                Night
-                </th>
-                <td>
-                    <?php echo $night->IconPhrase; ?>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">
-                Weather forecast of EffectiveDate <?php echo $formattedDate; ?>
-                </th>
-                <td>
-                    <?php echo $tomorrow->Text; ?>
-                <td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+  <body>
+
+    <div class="cur-con-weather-card__body">
+      <div class="cur-con-weather-card__panel">
+        <h2 class="cur-con-weather-card__title">
+          Current Weather
+        </h2>
+        <!-- <p class="cur-con-weather-card__subtitle">
+                    4:49 PM
+                </p> -->
+        <div class="forecast-container">
+          <img class="weather-icon" src=<?php echo $dayIconUrl; ?> width="88" height="88">
+          <div class="temp-container">
+            <div class="temp"> <?php echo $temperature->Minimum
+                            ->Value; ?>°<span class="after-temp">C</span></div>
+            <div class="real-feel">
+              RealFeel®
+              <?php echo $realFeelTemperature->Minimum
+                                ->Value; ?> °
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cur-con-weather-card__panel details-container">
+        <div class="spaced-content detail">
+          <span class="label">RealFeel Shade™</span>
+          <span class="value"><?php echo $realFeelTemperatureShade
+                        ->Minimum->Value; ?>°</span>
+        </div>
+        <div class="spaced-content detail">
+          <span class="label">Air Quality</span>
+          <span class="value" style="color: #00E39B">Excellent</span>
+        </div>
+        <div class="spaced-content detail">
+          <span class="label">Wind</span>
+          <span class="value"><?php echo $day->Wind->Speed
+                        ->Value; ?> km/h</span>
+        </div>
+        <div class="spaced-content detail">
+          <span class="label">Wind Gusts</span>
+          <span class="value"><?php echo $day->WindGust->Speed
+                        ->Value; ?> km/h</span>
+        </div>
+      </div>
+    </div>
+    <div class="spaced-content">
+      <span class="phrase"><?php echo $day->IconPhrase; ?></span>
+      <span class="cur-con-weather-card__cta">
+        <span class="text">More Details Please Access accuweather.com</span>
+        <img class="icon-arrow" src="https://www.accuweather.com/images/icons/arrow-right-black.svg" width="18"
+          height="18" alt="">
+      </span>
+    </div>
+
+
+
+    <div class="card weather-card content-module non-ad" data-qa="tomorrowWeatherCard">
+      <div class="card-header">
+        <h2>TOMORROW’S WEATHER FORECAST</h2>
+        <span class="sub-title"><?php echo $formattedDate; ?> </span>
+      </div>
+      <div class="card-content">
+        <div class="forecast-container">
+          <img class="icon-weather" src="https://www.accuweather.com/images/weathericons/01.svg" width="62" height="62">
+          <div class="temp-container">
+            <div class="temp"><?php echo $temperature->Maximum
+         ->Value; ?>°<span class="after-temp">/ <?php echo $temperature->Minimum
+    ->Value; ?>°</span></div>
+            <div class="real-feel">RealFeel® <?php echo $realFeelTemperature->Minimum
+         ->Value; ?>°</div>
+          </div>
+        </div>
+        <div class="phrase"><?php echo $tomorrow->Text; ?></div>
+        <img class="icon-arrow" src="https://www.accuweather.com/images/icons/arrow-right-black.svg" width="18"
+          height="18" alt="">
+      </div>
+
+  </body>
