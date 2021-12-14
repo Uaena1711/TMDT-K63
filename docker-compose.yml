@@ -21,13 +21,13 @@ services:
       - ./php/www.conf:/usr/local/etc/php-fpm.d/www.conf
     expose:
       - 9000
-  elastic:
-    image: elasticsearch:2.3.5
-    container_name: es
-    environment:
-      - discovery.type=single-node
-    ports:
-      - 9200:9200
+  # elastic:
+  #   image: elasticsearch:2.3.5
+  #   container_name: es
+  #   environment:
+  #     - discovery.type=single-node
+  #   ports:
+  #     - 9200:9200
   db:
     image: mysql:5.6.23
     environment:

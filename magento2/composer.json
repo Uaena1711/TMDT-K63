@@ -30,6 +30,7 @@
         "ext-zip": "*",
         "lib-libxml": "*",
         "boolfly/module-zalopay": "^1.0",
+        "boolfly/module-momo-wallet": "^1.0.2",
         "braintree/braintree_php": "3.35.0",
         "colinmollenhour/cache-backend-file": "~1.4.1",
         "colinmollenhour/cache-backend-redis": "1.11.0",

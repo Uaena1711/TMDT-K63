@@ -174,6 +174,8 @@ return [
         'Magento_Wishlist' => 1,
         'Magento_WishlistAnalytics' => 1,
         'Magento_WishlistGraphQl' => 1,
+        'Boolfly_MomoWallet' => 1,
+        'Boolfly_ZaloPay' => 1,
         'Extensions_Exchange' => 1,
         'Extensions_News' => 1,
         'Extensions_Weather' => 1
