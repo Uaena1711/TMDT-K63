@@ -15,5 +15,4 @@ rsync:
 	rsync -avhzL -e "ssh -i /home/sam/Downloads/quizlet-key.pem" --delete \
                                 --no-perms --no-owner --no-group \
                                 --exclude .git \
-																--filter=":- .gitignore" \
-                                . ubuntu@54.254.227.102:/home/ubuntu/TMDT-K63/
+                                . ubuntu@54.169.74.238:/home/ubuntu/TMDT-K63/
