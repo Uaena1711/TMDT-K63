@@ -70,9 +70,10 @@ return [
         'translate' => 1
     ],
     'downloadable_domains' => [
-        'magento2.local'
+        'magento2.local',
+        'localhost'
     ],
     'install' => [
-        'date' => 'Mon, 20 Dec 2021 07:05:50 +0000'
+        'date' => 'Fri, 22 Jul 2022 08:48:25 +0000'
     ]
 ];

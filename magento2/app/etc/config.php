@@ -176,6 +176,16 @@ return [
         'Magento_WishlistGraphQl' => 1,
         'Extensions_Exchange' => 1,
         'Extensions_News' => 1,
-        'Extensions_Weather' => 1
+        'Extensions_Weather' => 1,
+        'MGS_Blog' => 1,
+        'MGS_Brand' => 1,
+        'MGS_Core' => 1,
+        'MGS_Mpanel' => 1,
+        'MGS_Portfolio' => 1,
+        'MGS_Promobanners' => 1,
+        'MGS_QuickView' => 1,
+        'MGS_Social' => 1,
+        'MGS_StoreLocator' => 1,
+        'MGS_Testimonial' => 1
     ]
 ];

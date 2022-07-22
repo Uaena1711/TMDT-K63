@@ -13,6 +13,8 @@ services:
       - 80:80
   php:
     container_name: php
+    depends_on:
+      - db
     build: ./php
     volumes:
       - ./magento2/:/magento
